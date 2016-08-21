@@ -1,0 +1,102 @@
+
+ARM ASSEMBLY PROGRAMMING
+=========================
+ARM processors are Samsung smartphones devices main processor supplay. Apple
+iPhones devices uses Qualcomm processors (but there are agrees between Apple
+and Intel to integrate Intel chips on future iPhones:
+http://appleinsider.com/articles/14/06/23/intel-reportedly-pushing-to-supply-apple-with-baseband-chips-for-future-iphones
+
+And agrees between Samsung and Intel too:
+http://www.phonearena.com/news/Samsung-may-launch-an-Android-smartphone-powered-by-Intels-Atom-Moorefield_id57234
+
+All in search of support 64-bits architecture on smartphones.
+ARM supports 64-bits from ARMv8-A architecture (2011) adding 64-bit address
+space and 64-bit arithmentic).
+
+This branch will cover ARM assembly programming using an UNIX-like OS as
+development machine (FreeBSD/AMD64) and Samsung Galaxy S I9000 as ARM target
+machine. I will use Android SDK Tools (not heavy-ram-comsuming ADT with Eclipse
+IDE) and command-line to run ADB.
+
+For Window$ developers, download the SDK for your Window$ and run the same
+commands as I write here.
+
+Window$ (I386/AMD64) SDK:
+http://dl.google.com/android/android-sdk_r23.0.2-windows.zip 
+
+
+ABOUT ARM ASSEMBLY
+==================
+The Samsung Galaxy S run an ARM Cortex-A8 single-core CPU implementing the 
+ARM v7 instruction set architecture of 32-bits address, so all binary files
+are 32-bits.
+
+But I only can write console applications because lack of low-level development
+support of Android API (only works on Java and small parts of C/C++ for
+critical operations). So, unless Google make a new low-level API along with
+Java API a low-level programming on Android is impossible.
+
+
+COMPILE TOOLS
+=============
+To build any example, the must-exist file `main.s' contains a few lines about
+compile using ARM Assembly and linking with `arm-*-ld' command. Small example
+for FreeBSD OS:
+	- Create *.o object from *.s source file:
+		arm-gnueabi-freebsd-as -o main.o main.s
+
+	- Create binary file from *.o object:
+		arm-gnueabi-freebsd-ld -s -o first-native-prog.bin main.o
+
+On GNU/Linux OS, you need install `arm-linux-gnueab-gcc', but I STRONGLY
+RECOMMENDS you read your distro instructions to achieve this.
+
+
+All examples will use Intel assembly syntax.
+
+
+ADB UNIX INSTRUCTIONS
+=====================
+
+- Under FreeBSD, install ADB through FreeBSD ports under:
+	/usr/ports/devel/android-tools-adb
+
+	(Or check your current FreeBSD release if don't exists).
+	NOTE: NEVER USE THE `adb' PACKAGE ON ANDROID SDK FOR FreeBSD!!
+
+- Under GNU/Linux, download the SDK from here for (I386/AMD64):
+	http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz
+
+- On UNIX-like OS, when you run ADB for first time, ADB daemon won't start. You
+  need reset (as root) ADB server with the next commands:
+
+	# adb kill-server
+	# adb start-server
+
+- Now, with non-root user, run `adb devices' to list attached Android devices
+  on your machine:
+
+	% adb devices
+
+- To put the binary file on your smartphone, use ADB:
+	% adb push native-prgram.bin /path
+
+		Example:
+		% adb push native-program.bin /sdcard
+
+	NOTE: You MUST have permissions on directory to do that.
+
+- To run the application from your device using ADB:
+	% adb shell /sdcard/native-program.bin
+
+- To delete the binary file using ADB:
+	% adb shell rm /sdcard/native-program.bin
+
+USING ANDROID TERMINAL EMULATOR
+===============================
+TODO
+
+OTHER FASTER METHODS
+====================
+TO RESEARCH
+
